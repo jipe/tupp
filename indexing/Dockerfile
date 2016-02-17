@@ -8,6 +8,6 @@ RUN apt-get update -q && \
     apt-get --no-install-recommends -yq install ruby ruby-bunny ruby-pg
 
 ADD indexing/app /app
-ADD ruby-lib /ruby-lib
+ADD lib/ruby /ruby-lib
 USER tupp
 ENTRYPOINT exec ruby -I /ruby-lib /app/app.rb
