@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  db:
+    image: postgres:9.4
+
+  mq:
+    image: rabbitmq:3-management
+
+  solr:
+    image: solr:5.3.2
+
+  enqueueing:
+    build:
+      context: .
+      dockerfile: enqueueing/Dockerfile
+    volumes:
+      - "./enqueueing/app:/app:ro"
+      - "./ruby-lib:/ruby-lib:ro"
+    env_file: 
+      - "env"
+    depends_on:
+      - db
+      - mq
+
+  index_doc_generation:
+    build:
+      context: .
+      dockerfile: index_doc_generation/Dockerfile
+    volumes:
+      - "./index_doc_generation/app:/app:ro"
+      - "./ruby-lib:/ruby-lib:ro"
+    env_file: 
+      - "env"
+    depends_on:
+      - enqueueing
+
+  indexing:
+    build:
+      context: .
+      dockerfile: indexing/Dockerfile
+    volumes:
+      - "./indexing/app:/app:ro"
+      - "./ruby-lib:/ruby-lib:ro"
+    env_file: 
+      - "env"
+      - "indexing/env"
+    depends_on:
+      - solr
+      - index_doc_generation
