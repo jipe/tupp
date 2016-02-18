@@ -7,7 +7,7 @@ RUN useradd -U tupp
 RUN apt-get update -q && \
     apt-get --no-install-recommends -yq install ruby ruby-bunny ruby-pg
 
-ADD transforming/app /app
+ADD enrichment/app /app
 ADD lib/ruby /ruby-lib
 USER tupp
 ENTRYPOINT exec ruby -I /ruby-lib /app/app.rb

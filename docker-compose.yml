@@ -8,6 +8,9 @@ services:
     #build: db
     image: postgres:9.4
 
+  solr-dedup:
+    build: solr-dedup
+
   solr-cloud1:
     build: solr-cloud
 
@@ -24,20 +27,25 @@ services:
       context: .
       dockerfile: fetching/Dockerfile
 
-  extracting:
+  extraction:
     build:
       context: .
-      dockerfile: extracting/Dockerfile
+      dockerfile: extraction/Dockerfile
 
-  transforming:
+  transformation:
     build:
       context: .
-      dockerfile: transforming/Dockerfile
+      dockerfile: transformation/Dockerfile
 
-  enriching:
+  deduplication:
     build:
       context: .
-      dockerfile: enriching/Dockerfile
+      dockerfile: deduplication/Dockerfile
+
+  enrichment:
+    build:
+      context: .
+      dockerfile: enrichment/Dockerfile
 
   enqueueing:
     build:
