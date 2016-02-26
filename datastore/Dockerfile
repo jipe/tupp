@@ -9,12 +9,12 @@ RUN apt-get -q update && \
     apt-get -yq install --no-install-recommends ruby build-essential bundler
 
 # Install gem dependencies
-ADD enqueueing/Gemfile /app/Gemfile
+ADD datastore/Gemfile /app/Gemfile
 WORKDIR /app
 RUN exec bundle install
 
 # Add application files
-ADD enqueueing/app /app
+ADD datastore/app /app
 ADD lib/ruby /ruby-lib
 
 # Tear down build environment

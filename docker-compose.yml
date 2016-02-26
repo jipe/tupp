@@ -5,8 +5,8 @@ services:
     image: rabbitmq:3-management
 
   db:
-    #build: db
-    image: postgres:9.4
+    build: db
+    #image: postgres:9.4
 
   solr-dedup:
     build: solr-dedup
@@ -17,15 +17,33 @@ services:
   solr-cloud2:
     build: solr-cloud
 
+  solr-dedup:
+    build: solr-dedup
+
+  datastore:
+    build:
+      context: .
+      dockerfile: datastore/Dockerfile
+    environment:
+      RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
+    depends_on:
+      - mq
+
   balancer:
     build:
       context: .
       dockerfile: balancer/Dockerfile
+    depends_on:
+      - solr-cloud1
+      - solr-cloud2
 
   fetching:
     build:
       context: .
       dockerfile: fetching/Dockerfile
+    depends_on:
+      - mq
+      - db
 
   extraction:
     build:
@@ -36,16 +54,22 @@ services:
     build:
       context: .
       dockerfile: transformation/Dockerfile
+    depends_on:
+      - fetching
 
   deduplication:
     build:
       context: .
       dockerfile: deduplication/Dockerfile
+    depends_on:
+      - transformation
 
   enrichment:
     build:
       context: .
       dockerfile: enrichment/Dockerfile
+    depends_on:
+      - transformation
 
   enqueueing:
     build:
@@ -86,6 +110,4 @@ services:
       DATABASE_URL: "postgres://postgres:postgres@db:5432/index_docs"
       SOLR_URL: "http://solr:8983/solr"
     depends_on:
-      - solr-cloud1
-      - solr-cloud2
-      - index_doc_generation
+      - balancer
