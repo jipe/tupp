@@ -79,7 +79,7 @@ services:
       - "./ruby-lib:/ruby-lib:ro"
     environment:
       RABBITMQ_URL: "amqp://guest:guest@mq:5672"
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/enqueueing"
+      DATABASE_URL: "postgres://tupp:tupp@db:5432/enqueueing"
     depends_on:
       - db
       - mq
@@ -93,7 +93,7 @@ services:
       - "./lib/ruby:/ruby-lib:ro"
     environment:
       RABBITMQ_URL: "amqp://guest:guest@mq:5672"
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/index_docs"
+      DATABASE_URL: "postgres://tupp:tupp@db:5432/index_docs"
     depends_on:
       - enqueueing
 
@@ -106,7 +106,7 @@ services:
       - "./lib/ruby:/ruby-lib:ro"
     environment:
       RABBITMQ_URL: "amqp://guest:guest@mq:5672"
-      DATABASE_URL: "postgres://postgres:postgres@db:5432/index_docs"
+      DATABASE_URL: "postgres://tupp:tupp@db:5432/index_docs"
       SOLR_URL: "http://solr:8983/solr"
     depends_on:
       - balancer
