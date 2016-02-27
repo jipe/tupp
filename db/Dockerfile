@@ -15,11 +15,10 @@ USER postgres
 RUN pg_ctlcluster 9.4 main start && \
     createuser --createdb tupp && \
     echo "alter role tupp with password 'tupp'" | psql && \
-    export PGPASSWORD=tupp && \
-    # Add databases here
-    createdb -U tupp -h localhost enqueueing && \
-    createdb -U tupp -h localhost index_doc_generation && \
-    unset PGPASSWORD && \
+    export PGHOST=localhost PGUSER=tupp PGPASSWORD=tupp && \
+    createdb enqueueing && \
+    createdb index_doc_generation && \
+    unset PGHOST PGUSER PGPASSWORD && \
     pg_ctlcluster 9.4 main stop
 
 VOLUME /var/lib/postgresql
