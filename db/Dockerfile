@@ -22,4 +22,8 @@ RUN pg_ctlcluster 9.4 main start && \
     unset PGPASSWORD && \
     pg_ctlcluster 9.4 main stop
 
+VOLUME /var/lib/postgresql
+
+EXPOSE 5432
+
 CMD exec pg_ctlcluster --foreground 9.4 main start

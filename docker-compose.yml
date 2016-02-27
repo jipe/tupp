@@ -107,6 +107,11 @@ services:
     environment:
       RABBITMQ_URL: "amqp://guest:guest@mq:5672"
       DATABASE_URL: "postgres://tupp:tupp@db:5432/index_docs"
-      SOLR_URL: "http://solr:8983/solr"
+      SOLR_CLOUD1_URL: "http://solr-cloud1:8983/solr"
+      ZOOKEEPER1_HOST: "solr-cloud1"
+      ZOOKEEPER1_PORT: "9983"
+      SOLR_CLOUD2_URL: "http://solr-cloud2:8983/solr"
+      ZOOKEEPER2_HOST: "solr-cloud2"
+      ZOOKEEPER2_PORT: "9983"
     depends_on:
       - balancer
