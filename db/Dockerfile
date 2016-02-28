@@ -1,12 +1,6 @@
 FROM debian:jessie
 MAINTAINER docker@dtic.dk
 
-# Add PostgreSQL Apt Repository for using any version of PostgreSQL
-#RUN apt-get update -q && \
-#    apt-get install -yqq wget && \
-#    echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
-#    wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-
 RUN apt-get -q update && \
     apt-get -yq install postgresql-9.4
 
@@ -19,7 +13,9 @@ RUN pg_ctlcluster 9.4 main start && \
     createdb enqueueing && \
     createdb index_doc_generation && \
     unset PGHOST PGUSER PGPASSWORD && \
-    pg_ctlcluster 9.4 main stop
+    pg_ctlcluster 9.4 main stop && \
+    echo "host all tupp 172.17.0.1/8 md5" >> /etc/postgresql/9.4/main/pg_hba.conf && \
+    echo "listen_addresses = '*'" >> /etc/postgresql/9.4/main/postgresql.conf
 
 VOLUME /var/lib/postgresql
 
