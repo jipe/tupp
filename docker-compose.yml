@@ -4,7 +4,7 @@ services:
   mq:
     image: rabbitmq:3-management
     ports: 
-      - "8080:15672"
+      - "15672:15672"
         #user pass is guest/guest
 
   db:
