@@ -5,6 +5,36 @@ indexing of metadata records for scientific publications.
 
 ## Running a local development setup
 
-Be sure to install Docker Engine and Docker Compose (see https://docs.docker.com/compose/install/)
+Be sure to install Docker Engine and Docker Compose (see https://docs.docker.com/compose/install/).
 
-Run `docker-compose up` from the project root folder. That's it.
+Run `docker-compose up` from the project root folder. You should now have the following services:
+
+| Service             | URL                                    | IP         |
+|---------------------|----------------------------------------|------------|
+| RabbitMQ            | amqp://guest:guest@172.16.1.2:5672     | 172.16.1.2 |
+| RabbitMQ Management | http://guest:guest@172.16.1.2:15672    | 172.16.1.2 |
+| PostgreSQL          | postgresql://tupp:tupp@172.16.1.3:5432 | 172.16.1.3 |
+| DS2                 |                                        | 172.16.1.4 |
+| Datastore           |                                        | 172.16.1.5 |
+
+### Services
+
+#### RabbitMQ
+
+Description pending.
+
+#### RabbitMQ Management
+
+Description pending.
+
+#### PostgreSQL
+
+Description pending.
+
+#### DS2
+
+Description pending.
+
+#### Datastore
+
+Description pending.

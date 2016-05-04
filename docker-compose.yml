@@ -1,120 +1,55 @@
 version: '2'
 
+networks:
+  tupp_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.16.1.0/16
+        gateway: 172.16.1.1
+
 services:
+  # Message queue for flow control
   mq:
     image: rabbitmq:3-management
+    #build: mq
     ports: 
       - "15672:15672"
         #user pass is guest/guest
+    networks:
+      tupp_net:
+        ipv4_address: 172.16.1.2
 
+  # Database
   db:
     build: db
+    networks:
+      tupp_net:
+        ipv4_address: 172.16.1.3
 
-  solr-dedup:
-    build: solr-dedup
-
-  solr-cloud1:
-    build: solr-cloud
-
-  solr-cloud2:
-    build: solr-cloud
-
-  solr-dedup:
-    build: solr-dedup
-
-  datastore:
+  # Stubbing service for DS2
+  ds2:
     build:
       context: .
-      dockerfile: datastore/Dockerfile
+      dockerfile: ds2/Dockerfile
+    networks:
+      tupp_net:
+        ipv4_address: 172.16.1.4
     environment:
       RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
     depends_on:
-      - mq
+    - mq
 
-  balancer:
+  harvesting:
     build:
       context: .
-      dockerfile: balancer/Dockerfile
-    depends_on:
-      - solr-cloud1
-      - solr-cloud2
-
-  fetching:
-    build:
-      context: .
-      dockerfile: fetching/Dockerfile
-    depends_on:
-      - mq
-      - db
-
-  extraction:
-    build:
-      context: .
-      dockerfile: extraction/Dockerfile
-
-  transformation:
-    build:
-      context: .
-      dockerfile: transformation/Dockerfile
-    depends_on:
-      - fetching
-
-  deduplication:
-    build:
-      context: .
-      dockerfile: deduplication/Dockerfile
-    depends_on:
-      - transformation
-
-  enrichment:
-    build:
-      context: .
-      dockerfile: enrichment/Dockerfile
-    depends_on:
-      - transformation
-
-  enqueueing:
-    build:
-      context: .
-      dockerfile: enqueueing/Dockerfile
-    volumes:
-      - "./enqueueing/app:/app:ro"
-      - "./ruby-lib:/ruby-lib:ro"
+      dockerfile: harvesting/Dockerfile
+    networks:
+      tupp_net:
+        ipv4_address: 172.16.1.5
     environment:
-      RABBITMQ_URL: "amqp://guest:guest@mq:5672"
-      DATABASE_URL: "postgres://tupp:tupp@db:5432/enqueueing"
+      RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
+      DS2_RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
     depends_on:
-      - db
-      - mq
-
-  index_doc_generation:
-    build:
-      context: .
-      dockerfile: index_doc_generation/Dockerfile
-    volumes:
-      - "./index_doc_generation/app:/app:ro"
-      - "./lib/ruby:/ruby-lib:ro"
-    environment:
-      RABBITMQ_URL: "amqp://guest:guest@mq:5672"
-      DATABASE_URL: "postgres://tupp:tupp@db:5432/index_docs"
-    depends_on:
-      - enqueueing
-
-  indexing:
-    build:
-      context: .
-      dockerfile: indexing/Dockerfile
-    volumes:
-      - "./indexing/app:/app:ro"
-      - "./lib/ruby:/ruby-lib:ro"
-    environment:
-      RABBITMQ_URL: "amqp://guest:guest@mq:5672"
-      DATABASE_URL: "postgres://tupp:tupp@db:5432/index_docs"
-      SOLR_CLOUD1_URL: "http://solr-cloud1:8983/solr"
-      ZOOKEEPER1_HOST: "solr-cloud1"
-      ZOOKEEPER1_PORT: "9983"
-      SOLR_CLOUD2_URL: "http://solr-cloud2:8983/solr"
-      ZOOKEEPER2_HOST: "solr-cloud2"
-      ZOOKEEPER2_PORT: "9983"
-    depends_on:
-      - balancer
+    - mq
