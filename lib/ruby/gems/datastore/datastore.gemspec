@@ -9,5 +9,5 @@ Gem::Specification.new do |s|
   s.files       = ['lib/datastore.rb']
   s.license     = 'MIT'
 
-  s.add_runtime_dependency 'bunny', '~> 2.3.x'
+  s.add_runtime_dependency 'bunny'
 end
