@@ -1,15 +1,78 @@
-require 'datastore'
+require 'bunny'
+require 'json'
+require 'harvester'
+require 'exceptions'
 
-datastore = Datastore.new(ENV['DS2_RABBITMQ_URL'])
+conn = Bunny.new
+conn.start
 
-export_request = {
-  :from  => '2016-04-28T00:00:00',
-  :until => '2016-04-29T00:00:00',
-  :set   => 'orbit'
-}
+ch = conn.create_channel
+ch.prefetch(1)
 
-put 'Sending export request'
+err_x = ch.direct('errors',   :durable => true)
+req_x = ch.direct('requests', :durable => true)
 
-datastore.export_events(export_request) do |message|
-  puts message
+req_q = ch.queue(req_x.name, :durable => true)
+
+interrupted = false
+busy        = false
+
+req_q.bind(req_x, :routing_key => 'harvest').subscribe(:manual_ack => true) do |delivery_info, metadata, data|
+  busy = true
+  busy = false and return if interrupted
+
+  case data
+  when 'INT'
+    STDERR.puts 'Received INT signal via MQ.'
+    interrupted = true
+  else
+    harvest(data)
+  end
+
+  ch.ack(delivery_info.delivery_tag)
+  busy = false
+end
+
+Signal.trap(:INT) do
+  interrupted = true
+end
+
+sleep 1 until interrupted
+
+STDERR.puts 'Waiting for worker to finish.'
+
+sleep 1 while busy
+
+STDERR.puts 'Shutting down.'
+
+conn.close
+
+def harvest(data)
+  begin
+    harvester = find_harvester(JSON.parse(data))
+    harvester.harvest
+    unless harvester.completed?
+      next_request = harvester.continued_harvest_request
+      req_x.publish(JSON.generate(next_request), :routing_key => 'harvest', :persistent => true)
+    end
+  rescue JSON::ParserError
+    err_x.publish("Unparseable request: #{data}", :routing_key => 'harvest', :persistent => true)
+  rescue UnknownProviderError => e
+    err_x.publish(e.message, :routing_key => 'harvest', :persistent => true)
+  else
+    err_x.publish("Unknown error in request: #{data}", :routing_key => 'harvest', :persistent => true)
+  end      
+end
+
+def enabled_providers(provider_string = ENV['PROVIDERS'] || '')
+  provider_string.split(/\s*,\s*/)
+end
+
+def find_harvester(request)
+  case request['provider']
+  when 'ds2'
+    Harvester::Ds2Harvester.new(request)
+  else
+    raise UnknownProviderError.new(request['provider'])
+  end
 end

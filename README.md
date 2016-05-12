@@ -38,3 +38,14 @@ Description pending.
 #### Datastore
 
 Description pending.
+
+### Operation
+
+1. A harvest request is added to the "requests" queue with routing key "harvest".
+2. Harvesting receives the harvest request, instantiates the appropriate harvester and delegates execution to it.
+3. The harvester starts harvesting, publishing the original file(s) to the "requests" queue with routing keys "store" and "extract"
+   (perhaps the original file is not published but merely a reference to it).
+4. Record extraction receives the original file and instantiates the appropriate extractor and delegates execution to it.
+5. The record extractor extracts single records, publishing them to the "requests" queue with routing key "batch".
+6. Batch generation receives the single records and batches them together with some predetermined batch size. The batches are then
+   published to the "requests" queue with routing key "validate".

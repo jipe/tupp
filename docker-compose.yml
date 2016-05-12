@@ -47,7 +47,6 @@ services:
       dockerfile: harvesting/Dockerfile
     networks:
       tupp_net:
-        ipv4_address: 172.16.1.5
     environment:
       RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
       DS2_RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
