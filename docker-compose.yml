@@ -1,54 +1,8 @@
 version: '2'
 
-networks:
-  tupp_net:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-      - subnet: 172.16.1.0/16
-        gateway: 172.16.1.1
-
 services:
-  # Message queue for flow control
-  mq:
-    image: rabbitmq:3-management
-    #build: mq
-    ports: 
-      - "15672:15672"
-        #user pass is guest/guest
-    networks:
-      tupp_net:
-        ipv4_address: 172.16.1.2
-
-  # Database
-  db:
-    build: db
-    networks:
-      tupp_net:
-        ipv4_address: 172.16.1.3
-
-  # Stubbing service for DS2
-  ds2:
-    build:
-      context: .
-      dockerfile: ds2/Dockerfile
-    networks:
-      tupp_net:
-        ipv4_address: 172.16.1.4
-    environment:
-      RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
-    depends_on:
-    - mq
+  management:
+    image: dtic/tupp_management
 
   harvesting:
-    build:
-      context: .
-      dockerfile: harvesting/Dockerfile
-    networks:
-      tupp_net:
-    environment:
-      RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
-      DS2_RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
-    depends_on:
-    - mq
+    image: dtic/tupp_harvesting

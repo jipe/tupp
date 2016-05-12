@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+
+gem 'bunny', :github => 'jipe/bunny', :ref => 'HEAD'
+
+path '../lib/ruby/gems' do
+  gem 'datastore'
+end
