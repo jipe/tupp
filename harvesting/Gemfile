@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
-
-gem 'bunny', '~> 1.4.x', :github => 'jipe/bunny', :branch => '1.4.x-stable'
+ 
+gem 'bunny', :github => 'jipe/bunny', :ref => 'HEAD'
 
 path '../lib/ruby/gems' do
   gem 'datastore'

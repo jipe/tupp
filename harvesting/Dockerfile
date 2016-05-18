@@ -18,4 +18,4 @@ RUN exec bundle install
 COPY harvesting/app /app
 
 USER tupp
-ENTRYPOINT exec bundle exec ruby /app/app.rb 
+ENTRYPOINT exec bundle exec ruby -I /app /app/app.rb

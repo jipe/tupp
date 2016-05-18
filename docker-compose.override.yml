@@ -21,6 +21,7 @@ services:
 
   # Database
   db:
+    image: dtic/tupp_db
     build: db
     networks:
       tupp_net:
@@ -42,6 +43,7 @@ services:
 
   # Stubbing service for DS2
   ds2:
+    image: dtic/tupp_ds2
     build:
       context: .
       dockerfile: ds2/Dockerfile

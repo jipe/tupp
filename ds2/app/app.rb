@@ -32,16 +32,13 @@ req_q.bind(req_x, :routing_key => 'export').subscribe do |delivery_info, metadat
   res_x.publish(JSON.generate(:request => 'eor'))
 end
 
-interrupted = false
-
 Signal.trap(:INT) do
-  interrupted = true
+  STDERR.puts "\nShutting down"
+  Thread.current.exit
 end
 
 STDERR.puts 'DS2 ready for requests.'
 
-sleep 1 until interrupted
+at_exit { conn.close unless conn.nil? }
 
-STDERR.puts 'Shutting down'
-
-conn.close
+sleep
