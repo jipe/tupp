@@ -1,13 +1,16 @@
 FROM debian:jessie
-MAINTAINER docker@dtic.dk
 
-RUN apt-get -qq update && \
-    apt-get -yq install wget && \
-    wget -O- https://www.rabbitmq.com/rabbitmq-signing-key-public.asc | apt-key add - && \
-    echo 'deb http://www.rabbitmq.com/debian/ testing main' > /etc/apt/sources.list.d/rabbitmq.list && \
-    apt-get -qq update && \
-    apt-get -yq install rabbitmq-server
+RUN apt-get -q update && \
+    apt-get install -yq --no-install-recommends wget ca-certificates
+
+RUN echo 'deb http://www.rabbitmq.com/debian/ testing main' > /etc/apt/sources.list.d/rabbitmq.list && \
+    wget -O- https://www.rabbitmq.com/rabbitmq-signing-key-public.asc | apt-key add -
+
+RUN apt-get -q update && \
+    apt-get install -yq --no-install-recommends rabbitmq-server
 
 EXPOSE 5672 15672
 
-CMD exec rabbitmq-server
+COPY docker-entrypoint.sh /
+
+ENTRYPOINT /docker-entrypoint.sh

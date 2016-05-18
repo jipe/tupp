@@ -28,6 +28,9 @@ echo "[Configuration] Waiting $delay seconds for RabbitMQ to stop."
 
 sleep $delay
 
+echo '*** Enabling guest logins from remote hosts ***'
+echo '[{rabbit, [{loopback_users, []}]}].' > /etc/rabbitmq/rabbitmq.config
+
 echo 'Starting RabbitMQ in foreground (CTRL-C to exit)'
 
 exec $server
