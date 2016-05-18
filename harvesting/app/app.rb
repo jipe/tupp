@@ -5,8 +5,8 @@ require 'exceptions'
 require 'thread'
 
 STDERR.puts "RABBITMQ_URL = #{ENV['RABBITMQ_URL']}"
-mutex = Mutex.new
 conn  = Bunny.new
+mutex = Mutex.new
 conn.start
 
 ch = conn.create_channel
@@ -44,14 +44,16 @@ req_q.bind(req_x, :routing_key => 'harvest').subscribe(:manual_ack => true) do |
   end
 end
 
+interrupted = false
+
 Signal.trap(:INT) do
   STDERR.puts 'Shutting down'
-  mutex.synchronize { Thread.current.exit }
+  interrupted = true
 end
 
-at_exit { conn.close unless conn.nil? }
+sleep 1 until interrupted
 
-sleep
+mutex.synchronize { conn.close unless conn.nil? }
 
 def enabled_providers(provider_string = ENV['PROVIDERS'] || '')
   provider_string.split(/\s*,\s*/)

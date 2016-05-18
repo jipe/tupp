@@ -8,6 +8,6 @@ RUN apt-get -qq update && \
     apt-get -qq update && \
     apt-get -yq install rabbitmq-server
 
-EXPOSE 5671 5672 15671 15672
+EXPOSE 5672 15672
 
 CMD exec rabbitmq-server
