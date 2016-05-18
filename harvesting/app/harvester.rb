@@ -5,6 +5,7 @@ class Harvester
   def initialize(request, options = {})
     @request    = request
     @batch_size = options[:batch_size] || 10_000
+    STDERR.puts 'Initialized harvester'
   end
 
   def add_to_batch(record)
@@ -13,7 +14,7 @@ class Harvester
   def harvest
   end
 
-  def completed?
+  def complete?
     true
   end
 
