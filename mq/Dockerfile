@@ -1,7 +1,7 @@
 FROM debian:jessie
 
 RUN apt-get -q update && \
-    apt-get install -yq --no-install-recommends wget ca-certificates
+    apt-get install -yq --no-install-recommends wget ca-certificates python
 
 RUN echo 'deb http://www.rabbitmq.com/debian/ testing main' > /etc/apt/sources.list.d/rabbitmq.list && \
     wget -O- https://www.rabbitmq.com/rabbitmq-signing-key-public.asc | apt-key add -
@@ -11,6 +11,11 @@ RUN apt-get -q update && \
 
 EXPOSE 5672 15672
 
-COPY docker-entrypoint.sh /
+COPY enabled_plugins /etc/rabbitmq/enabled_plugins
+COPY configure_rabbitmq.sh /root/configure_rabbitmq.sh
 
-ENTRYPOINT /docker-entrypoint.sh
+RUN /bin/bash -c /root/configure_rabbitmq.sh
+
+COPY rabbitmq.config /etc/rabbitmq/rabbitmq.config
+
+ENTRYPOINT exec rabbitmq-server

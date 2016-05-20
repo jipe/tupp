@@ -4,4 +4,5 @@ gem 'bunny', :github => 'jipe/bunny', :branch => '1.4.x-stable'
 
 path '../lib/ruby/gems' do
   gem 'datastore'
+  gem 'application'
 end

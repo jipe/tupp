@@ -11,8 +11,8 @@ Run `docker-compose up` from the project root folder. You should now have the fo
 
 | Service             | URL                                    | IP         |
 |---------------------|----------------------------------------|------------|
-| RabbitMQ            | amqp://guest:guest@172.16.1.2:5672     | 172.16.1.2 |
-| RabbitMQ Management | http://guest:guest@172.16.1.2:15672    | 172.16.1.2 |
+| RabbitMQ            | amqp://tupp:tupp@172.16.1.2:5672       | 172.16.1.2 |
+| RabbitMQ Management | http://tupp:tupp@172.16.1.2:15672      | 172.16.1.2 |
 | PostgreSQL          | postgresql://tupp:tupp@172.16.1.3:5432 | 172.16.1.3 |
 | TUPP Management     | http://172.16.1.4:3000                 | 172.16.1.4 |
 

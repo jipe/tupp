@@ -51,7 +51,7 @@ services:
     networks:
       - tupp_net
     environment:
-      RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
+      RABBITMQ_URL: 'amqp://tupp:tupp@mq:5672/%2fds2'
     depends_on:
       - mq
 
@@ -62,7 +62,7 @@ services:
     networks:
       - tupp_net
     environment:
-      RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
-      DS2_RABBITMQ_URL: 'amqp://guest:guest@mq:5672'
+      RABBITMQ_URL: 'amqp://tupp:tupp@mq:5672'
+      DS2_RABBITMQ_URL: 'amqp://tupp:tupp@mq:5672/%2fds2'
     depends_on:
       - mq
