@@ -18,7 +18,7 @@ Application.with_mq do |interrupter, ch, mutex|
           :pkey     => i,
           :metadata => %{
             <?xml version="1.0" encoding="utf-8"?>
-            <mods xmlns="">
+            <mods xmlns="http://www.loc.gov/mods/v3">
               <identifier type="ds.dtic.dk:id:recordid">#{i}</identifier>
               <identifier type="ds.dtic.dk:id:dedupkey">#{(i-1) / 3}</identifier>
             </mods>
