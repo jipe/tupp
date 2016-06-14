@@ -20,11 +20,11 @@ Application.with_mq do |interrupter, ch, mutex|
       else
         begin
           harvester = HarvesterBuilder.new_harvester(JSON.parse(data))
-          STDERR.puts "Harvester is #{harvester}"
+          #STDERR.puts "Harvester is #{harvester}"
           harvester.harvest
           unless harvester.complete?
-            next_request = harvester.continued_harvest_request
-            STDERR.puts "Enqueueing next request: '#{JSON.generate next_request}'"
+            next_request = harvester.next_request
+            #STDERR.puts "Enqueueing next request: '#{JSON.generate(next_request)}'"
             req_x.publish(JSON.generate(next_request), :routing_key => 'harvest', :persistent => true)
           end
         rescue JSON::ParserError

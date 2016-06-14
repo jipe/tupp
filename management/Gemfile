@@ -1,3 +1,1 @@
 source 'https://rubygems.org'
-
-gem 'bunny', :github => 'ruby-amqp/bunny'

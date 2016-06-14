@@ -9,16 +9,17 @@ Application.with_mq do |interrupter, ch, mutex|
     mutex.synchronize do
       STDERR.puts 'Handling export request'
       request = JSON.parse(data)
-      res_x   = ch.direct(request['exchange'], :auto_delete => true)
+      res_x   = ch.direct(request['routingkey'], :auto_delete => true)
 
       (1..10).each do |i|
         result = {
-          :request  => 'ok',
+          :response => 'ok',
           :status   => 'ok',
           :pkey     => i,
           :metadata => %{
             <?xml version="1.0" encoding="utf-8"?>
             <mods xmlns="http://www.loc.gov/mods/v3">
+              <titleInfo><title>Record title</title></titleInfo>
               <identifier type="ds.dtic.dk:id:recordid">#{i}</identifier>
               <identifier type="ds.dtic.dk:id:dedupkey">#{(i-1) / 3}</identifier>
             </mods>
@@ -26,7 +27,7 @@ Application.with_mq do |interrupter, ch, mutex|
         }
         res_x.publish(JSON.generate(result))
       end
-      res_x.publish(JSON.generate(:request => 'eor'))
+      res_x.publish(JSON.generate(:response => 'eor'))
     end
   end
 

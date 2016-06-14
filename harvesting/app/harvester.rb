@@ -1,21 +1,20 @@
 class Harvester
-  
-  attr_accessor :request, :batch_size
+  attr_reader :request, :batch_size, :next_request
 
   def initialize(request, options = {})
-    @request    = request.dup
     @batch_size = options[:batch_size] || 10_000
+    (@request, @next_request) = split_request(request.dup)
   end
 
   def harvest
   end
 
-  def complete?
-    true
+  def split_request(request)
+    [request, nil]
   end
 
-  def continued_harvest_request
-    nil
+  def complete?
+    next_request.nil?
   end
 
 end

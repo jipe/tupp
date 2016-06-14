@@ -1,5 +1,3 @@
-require 'bunny'
-
 interrupted = false
 
 Signal.trap(:INT) do
