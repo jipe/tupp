@@ -20,7 +20,7 @@ Run `docker-compose up` from the project root folder. You should now have the fo
 
 #### RabbitMQ
 
-The message queueing system used for flow control throughout the application.
+The message queueing system used for flow control and concurrency throughout the application.
 
 #### RabbitMQ Management
 
