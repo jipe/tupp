@@ -32,7 +32,7 @@ class Harvester
         'untildate' => 'until',
         'set'       => 'set',
         'pkey'      => 'id'
-      }.map {|k,v| [k, request[v]]}
+      }.map {|k,v| [k.to_sym, request[v]]}
        .to_h
        .reject {|k,v| v.nil?}
     end
