@@ -1,12 +1,13 @@
+require 'securerandom'
+
 class Harvester
-  attr_reader :request, :batch_size, :next_request
+  attr_reader :request, :next_request, :provider
 
   def initialize(request, options = {})
-    @batch_size = options[:batch_size] || 10_000
     (@request, @next_request) = split_request(request.dup)
   end
 
-  def harvest
+  def harvest(&block)
   end
 
   def split_request(request)
@@ -16,5 +17,4 @@ class Harvester
   def complete?
     next_request.nil?
   end
-
 end

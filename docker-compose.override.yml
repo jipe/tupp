@@ -16,6 +16,7 @@ services:
     build: mq
     ports: 
       - "15672:15672"
+      - "5672:5672"
     networks:
       tupp_net:
         ipv4_address: 172.16.1.2
@@ -63,6 +64,6 @@ services:
       - tupp_net
     environment:
       RABBITMQ_URL: 'amqp://tupp:tupp@mq:5672'
-      DS2_RABBITMQ_URL: 'amqp://tupp:tupp@mq:5672/%2fds2'
+      DS_RABBITMQ_URL: 'amqp://tupp:tupp@mq:5672/%2fds2'
     depends_on:
       - mq

@@ -7,7 +7,6 @@ Application.with_mq do |interrupter, ch, mutex|
 
   req_q.bind(req_x, :routing_key => 'export').subscribe do |delivery_info, metadata, data|
     mutex.synchronize do
-      STDERR.puts 'Handling export request'
       request = JSON.parse(data)
       res_x   = ch.direct(request['routingkey'], :auto_delete => true)
 

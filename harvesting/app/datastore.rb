@@ -1,13 +1,13 @@
+require 'core_ext/time'
 require 'bunny'
 require 'json'
 
 class Datastore
-
   def initialize(rabbitmq_url = ENV['RABBITMQ_URL'])
     @rabbitmq_url = rabbitmq_url
   end
 
-  def export_events(options)
+  def export_events(request)
     raise unless block_given?
 
     conn = Bunny.new(@rabbitmq_url)
@@ -16,10 +16,10 @@ class Datastore
     ch = conn.create_channel
     
     req_x = ch.topic('dticds2topic', durable: true)
-    res_x = ch.direct("export?#{create_exchange_name(options)}", auto_delete: true)
+    res_x = ch.direct("export?#{create_exchange_name(request)}", auto_delete: true)
     res_q = ch.queue(res_x.name, auto_delete: true, exclusive: true)
     
-    export_request = create_export_request(options.merge(exchange: res_x.name))
+    export_request = create_export_request(request, res_x.name)
     req_x.publish(JSON.generate(export_request), routing_key: 'export')
 
     res_q.bind(res_x).subscribe(block: true) do |delivery_info, metadata, data|
@@ -36,27 +36,20 @@ class Datastore
 
   private
 
-  def create_export_request(options)
+  def create_export_request(request, exchange_name)
     {
-      'routingkey' => options[:exchange],
+      'routingkey' => exchange_name,
       'requestor'  => 'tupp',
-      'fromdate'   => options[:from],
-      'untildate'  => options[:until],
-      'set'        => options[:set],
-      'pkey'       => options[:pkey]
+      'fromdate'   => request.from,
+      'untildate'  => request.until,
+      'set'        => request.set,
+      'pkey'       => request.id
     }
       .reject {|k,v| v.nil?}
   end
 
-  def create_exchange_name(options)
-    {
-      'requestor' => 'tupp',
-      'fromdate'  => options[:from],
-      'untildate' => options[:until],
-      'set'       => options[:set],
-      'pkey'      => options[:pkey]
-    }
-      .reject {|k,v| v.nil?}
+  def create_exchange_name(request)
+    create_export_request(request, nil)
       .map    {|k,v| "#{k}=#{v}"}
       .join('&')
   end

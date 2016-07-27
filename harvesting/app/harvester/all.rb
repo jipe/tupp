@@ -1,1 +1,1 @@
-require 'harvester/ds2_harvester'
+require 'harvester/datastore_harvester'
