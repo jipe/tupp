@@ -20,8 +20,6 @@ module Application
       end
     end
 
-    ch = conn.create_channel
-
     interrupted = false
 
     %w(INT TERM).each do |sig| 
@@ -33,7 +31,7 @@ module Application
 
     interrupter = ->() { interrupted = true }
 
-    yield interrupter, ch, mutex
+    yield interrupter, conn, mutex
 
     sleep 1 until interrupted
 

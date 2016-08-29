@@ -4,14 +4,12 @@ require 'json'
 
 class Datastore
   def initialize(rabbitmq_url = ENV['RABBITMQ_URL'])
-    @rabbitmq_url = rabbitmq_url
+    @conn = Bunny.new(rabbitmq_url)
+    @conn.start
   end
 
   def export_events(request)
     raise unless block_given?
-
-    conn = Bunny.new(@rabbitmq_url)
-    conn.start
 
     ch = conn.create_channel
     
@@ -31,7 +29,11 @@ class Datastore
       end
     end
   ensure
-    conn.close unless conn.nil?
+    ch.close unless ch.nil?
+  end
+
+  def close
+    @conn.close unless @conn.nil?
   end
 
   private
@@ -43,14 +45,15 @@ class Datastore
       'fromdate'   => request.from,
       'untildate'  => request.until,
       'set'        => request.set,
-      'pkey'       => request.id
+      'pkey'       => request.identifier
     }
       .reject {|k,v| v.nil?}
   end
 
   def create_exchange_name(request)
     create_export_request(request, nil)
-      .map    {|k,v| "#{k}=#{v}"}
+      .merge(id: request.id)
+      .map {|k,v| "#{k}=#{v}"}
       .join('&')
   end
 end

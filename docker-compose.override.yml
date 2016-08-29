@@ -43,12 +43,12 @@ services:
       - mq
       - db
 
-  # Stubbing service for DS2
-  ds2:
-    image: dtic/tupp_ds2
+  # Stubbing service for datastore
+  datastore:
+    image: dtic/tupp_datastore
     build:
       context: .
-      dockerfile: ds2/Dockerfile
+      dockerfile: datastore/Dockerfile
     networks:
       - tupp_net
     environment:

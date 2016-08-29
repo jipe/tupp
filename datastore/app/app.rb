@@ -1,7 +1,9 @@
 require 'application'
 require 'json'
 
-Application.with_mq do |interrupter, ch, mutex|
+Application.with_mq do |interrupter, conn, mutex|
+  ch = conn.create_channel
+
   req_x = ch.topic('dticds2topic', :durable => true)
   req_q = ch.queue('export', :durable => true)
 

@@ -6,7 +6,8 @@ require 'exceptions'
 require 'application'
 require 'core_ext/time'
 
-Application.with_mq do |interrupter, ch, mutex|
+Application.with_mq do |interrupter, conn, mutex|
+  ch = conn.create_channel
   ch.prefetch(1)
 
   err_x = ch.direct('errors',   durable: true)
@@ -22,12 +23,24 @@ Application.with_mq do |interrupter, ch, mutex|
       else
         begin
           STDERR.puts "Handling request: '#{data}'"
-          harvester = HarvesterBuilder.new_harvester(HarvestRequest.parse(data))
+          harvester = HarvesterBuilder.get_harvester(HarvestRequest.parse(data))
+          i = 0
           harvester.harvest do |data|
+            i += 1
+            STDERR.print "#{'%2d' % i}. Handling received data... "
             received_at = Time.now
             ['store.original', 'extract'].each do |routing_key|
-              req_x.publish(HarvestResult.new(provider: harvester.provider, received_at: received_at, data: data).to_s, routing_key: routing_key, persistent: true)
+              req_x.publish(
+                HarvestResult.new(
+                  :provider    => harvester.provider,
+                  :received_at => received_at,
+                  :data        => data
+                ).to_s,
+                :routing_key => routing_key.
+                :persistent  => true
+              )
             end
+            STDERR.print "done!\n"
           end
           unless harvester.complete?
             req_x.publish(harvester.next_request.to_s, routing_key: 'harvest', persistent: true)
@@ -41,9 +54,12 @@ Application.with_mq do |interrupter, ch, mutex|
         rescue => e
           STDERR.puts "Unknown error in request: '#{data}' #{e.message}"
           err_x.publish("Unknown error in request: #{data}", routing_key: 'harvest', persistent: true)
+        ensure
         end      
       end
+      STDERR.print 'Sending ACK... '
       ch.ack(delivery_info.delivery_tag)
+      STDERR.print "done!\n"
     end
   end
   STDERR.puts 'Ready to process harvest requests.'

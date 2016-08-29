@@ -8,7 +8,7 @@ class Harvester
   class DatastoreHarvester < Harvester
     attr_reader :datastore
 
-    MAX_HARVEST_INTERVAL_IN_SECONDS = 60*60*24
+    MAX_HARVEST_INTERVAL_IN_SECONDS = 60*60*24 # 1 day
 
     def initialize(request, options = {})
       super
@@ -30,7 +30,7 @@ class Harvester
       t2 = request.until
 
       if t2 - t1 > MAX_HARVEST_INTERVAL_IN_SECONDS
-        next_request    = request.dup
+        next_request  = request.dup
         request.until = next_request.from = t1 + MAX_HARVEST_INTERVAL_IN_SECONDS
         [request, next_request]
       else

@@ -8,9 +8,14 @@ class HarvestResult
   end
 
   def to_h
-    [:provider, :received_at, :data].reject {|k| self.send(k).nil?}
-                                    .map {|k| [k, self.send(k)]}
-                                    .to_h
+    [
+      :provider,
+      :received_at,
+      :data
+    ]
+      .reject {|k| self.send(k).nil?}
+      .map    {|k| [k, self.send(k)]}
+      .to_h
   end
 
   def to_s
