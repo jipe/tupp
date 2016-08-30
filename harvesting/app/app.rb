@@ -23,11 +23,11 @@ Application.with_mq do |interrupter, conn, mutex|
       else
         begin
           STDERR.puts "Handling request: '#{data}'"
-          harvester = HarvesterBuilder.get_harvester(HarvestRequest.parse(data))
+          harvester = HarvesterBuilder.new_harvester(HarvestRequest.parse(data))
           i = 0
           harvester.harvest do |data|
             i += 1
-            STDERR.print "#{'%2d' % i}. Handling received data... "
+            #STDERR.print "#{'%2d' % i}. Handling received data... "
             received_at = Time.now
             ['store.original', 'extract'].each do |routing_key|
               req_x.publish(
@@ -36,12 +36,13 @@ Application.with_mq do |interrupter, conn, mutex|
                   :received_at => received_at,
                   :data        => data
                 ).to_s,
-                :routing_key => routing_key.
+                :routing_key => routing_key,
                 :persistent  => true
               )
             end
-            STDERR.print "done!\n"
+            #STDERR.print "done!\n"
           end
+          STDERR.puts "Harvested #{i} records"
           unless harvester.complete?
             req_x.publish(harvester.next_request.to_s, routing_key: 'harvest', persistent: true)
           end
@@ -54,7 +55,6 @@ Application.with_mq do |interrupter, conn, mutex|
         rescue => e
           STDERR.puts "Unknown error in request: '#{data}' #{e.message}"
           err_x.publish("Unknown error in request: #{data}", routing_key: 'harvest', persistent: true)
-        ensure
         end      
       end
       STDERR.print 'Sending ACK... '

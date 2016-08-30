@@ -3,7 +3,7 @@ require 'securerandom'
 class Harvester
   attr_reader :request, :next_request, :provider
 
-  def initialize(request, options = {})
+  def initialize(request)
     (@request, @next_request) = split_request(request.dup)
   end
 

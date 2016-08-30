@@ -10,7 +10,7 @@ class Harvester
 
     MAX_HARVEST_INTERVAL_IN_SECONDS = 60*60*24 # 1 day
 
-    def initialize(request, options = {})
+    def initialize(request)
       super
       @datastore = Datastore.new(ENV['DS_RABBITMQ_URL'])
       @provider  = 'ds2'

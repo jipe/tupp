@@ -4,12 +4,14 @@ require 'json'
 
 class Datastore
   def initialize(rabbitmq_url = ENV['RABBITMQ_URL'])
-    @conn = Bunny.new(rabbitmq_url)
-    @conn.start
+    @rabbitmq_url = rabbitmq_url
   end
 
   def export_events(request)
     raise unless block_given?
+
+    conn = Bunny.new(@rabbitmq_url)
+    conn.start
 
     ch = conn.create_channel
     
@@ -23,17 +25,12 @@ class Datastore
     res_q.bind(res_x).subscribe(block: true) do |delivery_info, metadata, data|
       case data
       when /"response":"eor"/
+        ch.close
         conn.close
       else
         yield data
       end
     end
-  ensure
-    ch.close unless ch.nil?
-  end
-
-  def close
-    @conn.close unless @conn.nil?
   end
 
   private
