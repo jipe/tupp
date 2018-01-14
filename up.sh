@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Builds and starts containers in background
+
 COMPOSE=`which docker-compose`
 
 if [ -z "$COMPOSE" ]; then
@@ -6,5 +9,4 @@ if [ -z "$COMPOSE" ]; then
   exit 1
 fi
 
-# Use -f for log following
-exec $COMPOSE logs -t $@
+exec $COMPOSE up -d --build "$@"

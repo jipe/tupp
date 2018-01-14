@@ -1,7 +1,0 @@
-source 'https://rubygems.org'
-
-gem 'bunny'
-
-path '../lib/ruby/gems' do
-  gem 'application'
-end

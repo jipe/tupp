@@ -1,0 +1,13 @@
+source 'https://rubygems.org'
+ 
+gem 'nokogiri'
+
+group :test do
+  gem 'byebug'
+  gem 'rspec'
+end
+
+path '../lib/ruby/gems' do
+  gem 'application'
+  gem 'record_store'
+end

@@ -1,8 +1,14 @@
-version: '2'
+version: '3'
 
 services:
-  management:
-    image: dtic/tupp_management
+  mq: 
+    image: rabbitmq:3.6-management-alpine
 
-  harvesting:
-    image: dtic/tupp_harvesting
+  db: 
+    image: postgres:10-alpine
+
+  harvester:
+    image: tupp:harvester
+    depends_on:
+      - mq
+      - db

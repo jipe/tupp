@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.description = 'Convenience classes for TUPP applications'
   s.authors     = ['Jimmy Petersen']
   s.email       = 'jipe@dtu.dk'
-  s.files       = ['lib/application.rb']
+  s.files       = Dir['{lib}/**/*.rb']
   s.license     = 'MIT'
 
-  s.add_runtime_dependency 'bunny'
+  s.add_runtime_dependency 'mq'
 end

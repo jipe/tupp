@@ -1,7 +1,0 @@
-source 'https://rubygems.org'
- 
-gem 'bunny', :github => 'jipe/bunny', :branch => '1.4.x-stable' # We need this to talk to ancient DS2 rabbit
-
-path '../lib/ruby/gems' do
-  gem 'application'
-end
