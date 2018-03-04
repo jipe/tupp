@@ -3,9 +3,9 @@ require 'nokogiri'
 module TUPP
   module XML
     class Handler
-      attr_reader :document, :character_buffer
+      attr_reader :document
 
-      def initialize(document = {})
+      def initialize(document)
         @document         = document
         @character_buffer = ''
       end
@@ -22,6 +22,10 @@ module TUPP
 
       def characters(value)
         @character_buffer << value
+      end
+
+      def character_buffer
+        @character_buffer.dup
       end
 
       protected
@@ -49,10 +53,10 @@ module TUPP
         unless @handler_stack.empty?
           handler = @handler_stack.first
           while handler.respond_to?(:start_element)
-            new_handler = handler.start_element(name, attrs, uri)
+            new_handler = handler.start_element(name: name, attrs: attrs, uri: uri)
             @handler_stack.unshift(new_handler) if new_handler.respond_to?(:start_element)
             handler = new_handler
-            puts "Delegating element '#{name}' to #{handler&.class}" if handler.respond_to?(:start_element)
+            # puts "Delegating element '#{name}' to #{handler&.class}" if handler.respond_to?(:start_element)
           end
         end
       end
@@ -61,10 +65,11 @@ module TUPP
         unless @handler_stack.empty?
           handler      = @handler_stack.first
           prev_handler = nil
-          while handler&.end_element(name, uri, prev_handler)
+          while handler&.end_element(name: name, uri: uri, handler: prev_handler)
             prev_handler = @handler_stack.shift
             handler      = @handler_stack.first
-            puts "#{prev_handler.class} finished. Notifying #{handler ? handler.class : 'none'}"
+            #puts "#{prev_handler.class} finished. Notifying #{handler ? handler.class : 'none'}"
+            #puts prev_handler.document
           end
         end
       end
@@ -78,6 +83,7 @@ module TUPP
       digester = Digester.new(handler)
       parser   = Nokogiri::XML::SAX::Parser.new(digester)
       parser.parse(xml)
+      handler.document
     end
   end
 end

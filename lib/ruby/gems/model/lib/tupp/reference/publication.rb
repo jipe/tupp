@@ -7,12 +7,17 @@ module TUPP
                   :publisher,
                   :publication_date,
                   :copyright,
-                  :locations
+                  :locations,
+                  :language
 
-    def initialize
+    def initialize(document = {})
+      super(document)
+
       @authors   = []
       @editors   = []
       @locations = []
+
+      self.language = document[:language]
     end
   end
 end

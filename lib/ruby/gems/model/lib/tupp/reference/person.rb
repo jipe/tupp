@@ -4,13 +4,8 @@ module TUPP
   class Reference::Person < Reference
     attr_accessor :first_name, :last_name, :affiliations
 
-    def initialize(args)
-      super
-      @first_name   = args[:first_name] if args[:first_name]
-      @last_name    = args[:last_name]  if args[:last_name]
-      @affiliations = args[:affiliations] || []
-
-      @affiliations << args[:affiliation] if args[:affiliation]
+    def initialize(document = {})
+      super(document)
     end
   end
 end

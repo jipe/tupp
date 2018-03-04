@@ -6,5 +6,9 @@ module TUPP
                   :from_date,
                   :until_date,
                   :coordinators
+
+    def initialize(document = {})
+      super(document)
+    end
   end
 end

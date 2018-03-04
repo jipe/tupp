@@ -4,8 +4,8 @@ module TUPP
   class Reference::Publication::JournalIssue < Reference::Publication
     attr_accessor :journal, :volume, :issue
 
-    def publisher
-      journal.publisher
+    def initialize(document = {})
+      super(document)
     end
   end
 end

@@ -2,8 +2,8 @@ require 'tupp/identifier'
 
 module TUPP
   class Identifier::DOI < Identifier
-    def initialize *args
-      super
+    def initialize(doi)
+      super(type: :doi, value: doi)
     end
 
     def resolver_url

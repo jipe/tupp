@@ -6,7 +6,10 @@ require 'tupp/xml/mods'
 record_store = TUPP::RecordStore.new
 
 TUPP::Application.with_mq do |mq, mutex, interrupter|
-  mq.subscribe(exchange: 'repository_events', queue: 'update_record_store', routing_keys: ['update.#', 'delete.#'], parse_json: true) do |message|
+  mq.subscribe(exchange:     'repository_events',
+               queue:        'update_record_store',
+               routing_keys: ['update.#', 'delete.#'],
+               parse_json:   true) do |message|
     mutex.synchronize do
       case message.routing_key
       when /^delete/
