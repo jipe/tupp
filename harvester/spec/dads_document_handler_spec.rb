@@ -4,7 +4,7 @@ require 'tupp/model'
 require 'dads/shared_examples_for_reference'
 require 'dads/shared_examples_for_publication'
 
-def valid_journal_article
+def valid_dads_journal_article
 <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <mods version="3.6" xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -42,7 +42,7 @@ module TUPP::XML::DADS
     subject(:parsed_document) { TUPP::XML.digest(xml, handler) }
 
     context 'when document is a valid journal article' do
-      let(:xml) { valid_journal_article }
+      let(:xml) { valid_dads_journal_article }
 
       include_examples 'valid_reference'
       include_examples 'valid_publication'
@@ -56,14 +56,15 @@ module TUPP::XML::DADS
       end
 
       it 'parses the article title' do
-        expect(parsed_document.title).to eq 'The Awesome Journal'
+        expect(parsed_document.title).to eq 'Journal Article Title'
       end
 
       it 'parses the normalized article title' do
-        expect(parsed_document.normalized_title).to eq 'the awesome journal'
+        expect(parsed_document.normalized_title).to eq 'journal article normalized title'
       end
 
-      it 'parses the article authors'
+      it 'parses the article authors' do
+      end
     end
   end
 end

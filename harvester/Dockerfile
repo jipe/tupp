@@ -30,6 +30,9 @@ RUN apk del .nokogiri-builddeps
 # Add application files
 COPY harvester/app /app
 
+# Add spec files
+COPY harvester/spec /spec
+
 USER tupp
 
 CMD ["bundle", "exec", "ruby", "-I", "/app", "/app/tupp/app.rb"]
