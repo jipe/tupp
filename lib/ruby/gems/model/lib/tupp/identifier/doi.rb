@@ -1,7 +1,7 @@
 require 'tupp/identifier'
 
 module TUPP
-  class Identifier::DOI < Identifier
+  class DOI < Identifier
     def initialize(doi)
       super(type: :doi, value: doi)
     end

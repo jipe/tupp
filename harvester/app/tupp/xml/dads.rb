@@ -30,7 +30,7 @@ module TUPP::XML::DADS
 
     def genre_map
       @@genre_map ||= {
-        'bib:article:journal_article' => TUPP::Reference::Publication::JournalArticle
+        'bib:article:journal_article' => TUPP::JournalArticle
       }
     end
 
@@ -67,6 +67,10 @@ module TUPP::XML::DADS
           return finish
         when 'titleInfo'
           document.merge!(handler.document)
+        when 'name'
+          case handler.document['type']
+          when 'personal'
+          end
         end
       end
       super
@@ -157,6 +161,7 @@ module TUPP::XML::DADS
         when 'name'
           type_attr = attrs.find { |attr| attr.localname == 'type' }
           if type_attr
+            document['type'] = type
             case type_attr.value
             when 'personal'
               return delegate_to(PersonalNameHandler.new(document))
@@ -187,6 +192,10 @@ module TUPP::XML::DADS
       when NS::MODS_V3
         case name
         when 'namePart'
+          type_attr = attrs.find { |attr| attr.localname == 'type' }
+          if type_attr
+            @type = type_attr.value
+          end
           reset_character_buffer
         end
       end
@@ -198,7 +207,7 @@ module TUPP::XML::DADS
       when NS::MODS_V3
         case name
         when 'namePart'
-          (document[:name_parts] ||= []) << character_buffer.strip
+          (document[:name_parts] ||= []) << { type: @type, value: character_buffer.strip }
         when 'name'
           return finish
         end
@@ -244,7 +253,7 @@ module TUPP::XML::DADS
           when :main
             document.merge!(title: @title, subtitle: @subtitle)
           when :normalized
-            document.merge!(normalized_title: @title)
+            document.merge!(normalized_title: @title, normalized_subtitle: @subtitle)
           end
           return finish
         when 'title'

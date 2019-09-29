@@ -10,5 +10,5 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.add_runtime_dependency 'model'
-  s.add_runtime_dependency 'mongo'
+  s.add_runtime_dependency 'sequel'
 end

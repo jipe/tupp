@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mods version="3.6" xmlns="http://www.loc.gov/mods/v3" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <genre type="ds.dtic.dk:type:synthesized">bib:article:journal_article</genre>
+  <genre type="ds.dtic.dk:type:origin">dja</genre>
+  <language>
+    <languageTerm type="code" authority="iso639-2b">eng</languageTerm>
+  </language>
+  <identifier type="doi">10.1002/12345678</identifier>
+  <titleInfo>
+    <title lang="eng">reference title</title>
+    <subTitle lang="eng">reference subtitle</subTitle>
+  </titleInfo>
+  <titleInfo type="uniform" otherType="sort title">
+    <title lang="eng">reference sort title</title>
+    <subTitle lang="eng">reference sort subtitle</subTitle>
+  </titleInfo>
+  <name type="personal">
+    <namePart type="given">first</namePart>
+    <namePart type="family">author</namePart>
+    <role>
+      <roleTerm type="code" authority="marcrelator">aut</roleTerm>
+      <roleTerm type="text" authority="marcrelator">Author</roleTerm>
+    </role>
+    <affiliation>first author affiliation</affiliation>
+  </name>
+</mods>
+

@@ -1,7 +1,7 @@
 require 'tupp/reference'
 
 module TUPP
-  class Reference::Organisation < Reference
+  class Organisation < Reference
     attr_accessor :name, :suborganisations
 
     def initialize(document = {})

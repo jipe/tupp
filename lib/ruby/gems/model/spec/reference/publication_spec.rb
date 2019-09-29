@@ -1,6 +1,6 @@
 require 'tupp/model'
 
-describe TUPP::Reference::Publication do
+describe TUPP::Publication do
   it { is_expected.to be_a TUPP::Reference }
 
   describe '#initialize' do
@@ -23,7 +23,7 @@ describe TUPP::Reference::Publication do
 
     context 'with arguments' do
       it 'raises an error' do
-        expect { TUPP::Reference::Publication.new({}) }.to raise_error(ArgumentError)
+        expect { TUPP::Publication.new({}) }.to raise_error(ArgumentError)
       end
     end
   end

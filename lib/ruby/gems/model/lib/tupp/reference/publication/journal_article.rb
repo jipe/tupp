@@ -1,7 +1,7 @@
 require 'tupp/reference/publication'
 
 module TUPP
-  class Reference::Publication::JournalArticle < Reference::Publication
+  class JournalArticle < Publication
     attr_accessor :journal_issue, :pages
 
     def initialize(document = {})

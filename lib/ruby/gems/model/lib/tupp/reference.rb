@@ -6,6 +6,7 @@ module TUPP
                   :title,
                   :subtitle,
                   :normalized_title,
+                  :normalized_subtitle,
                   :title_variants,
                   :grouping_key
 
@@ -13,9 +14,10 @@ module TUPP
       @identifiers    = []
       @title_variants = []
 
-      self.title            = document[:title]
-      self.subtitle         = document[:subtitle]
-      self.normalized_title = document[:normalized_title]
+      self.title               = document[:title]
+      self.subtitle            = document[:subtitle]
+      self.normalized_title    = document[:normalized_title]
+      self.normalized_subtitle = document[:normalized_subtitle]
     end
   end
 end

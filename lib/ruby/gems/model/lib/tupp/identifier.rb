@@ -2,11 +2,11 @@ require 'tupp'
 
 module TUPP
   class Identifier
-    attr_reader :type, :value
+    attr_accessor :type, :value
 
     def initialize(type: nil, value: nil)
-      @type  = args[:type]  if args[:type]
-      @value = args[:value] if args[:value]
+      @type  = type
+      @value = value
     end
 
     def ==(other)

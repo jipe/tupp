@@ -5,6 +5,7 @@ gem 'nokogiri'
 group :test do
   gem 'byebug'
   gem 'rspec'
+  gem 'factory_bot'
 end
 
 path '../lib/ruby/gems' do

@@ -1,7 +1,7 @@
 require 'tupp/reference'
 
 module TUPP
-  class Reference::Publication < Reference
+  class Publication < Reference
     attr_accessor :authors,
                   :editors,
                   :publisher,
@@ -17,7 +17,8 @@ module TUPP
       @editors   = []
       @locations = []
 
-      self.language = document[:language]
+      @language = document[:language]
+      
     end
   end
 end

@@ -1,7 +1,7 @@
 require 'tupp/reference/publication'
 
 module TUPP
-  class Reference::Publication::ConferencePaper < Reference::Publication
+  class ConferencePaper < Publication
     attr_accessor :conference
 
     def initialize(document = {})

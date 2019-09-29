@@ -1,7 +1,7 @@
 require 'tupp/reference'
 
 module TUPP
-  class Reference::Person < Reference
+  class Person < Reference
     attr_accessor :first_name, :last_name, :affiliations
 
     def initialize(document = {})

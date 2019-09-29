@@ -1,7 +1,7 @@
 require 'tupp/reference/publication'
 
 module TUPP
-  class Reference::Publication::Book < Reference::Publication
+  class Book < Publication
     def initialize(document = {})
       super(document)
     end
